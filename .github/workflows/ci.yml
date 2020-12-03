@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  CI: true
+
+jobs:
+  run:
+    runs-on: windows-latest
+    if: (!contains(github.event.commits[0].message, '[ci skip]') && !contains(github.event.commits[0].message, '[skip ci]'))
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+        with:
+          # We need to get all git revisions for the version number to work
+          fetch-depth: 0
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+
+#      - name: Install Inno Setup
+#        run: Choco-Install InnoSetup --version=5.6.1
+
+      - name: Build
+        run: CALL "build.bat" Build All Release
+        shell: cmd
+
+      - name: Build setup
+        run: CALL "setup\build_installer.bat"
+        shell: cmd
+
+#      - name: Cache Chocolatey
+#        uses: actions/cache@v2
+#        with:
+#          path: "%TEMP%"
+#          key: ${{ runner.os }}-choco-${{ hashFiles('.github/workflows/*.yml') }}
+#          restore-keys: |
+#            ${{ runner.os }}-choco-${{ hashFiles('.github/workflows/*.yml') }}
+#            ${{ runner.os }}-choco-
+
+      - name: Upload setup
+        uses: actions/upload-artifact@v2
+        with:
+          name: setup
+          path: "setup/PerfmonBar.*.exe"
+          if-no-files-found: error

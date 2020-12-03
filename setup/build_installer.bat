@@ -1,5 +1,5 @@
 @ECHO OFF
-REM  Copyright (C) 2011-2012, 2019 XhmikosR
+REM  Copyright (C) 2011-2012, 2019-2020 XhmikosR
 REM
 REM  This program is free software: you can redistribute it and/or modify
 REM  it under the terms of the GNU General Public License as published by
@@ -17,6 +17,9 @@ REM  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 SETLOCAL ENABLEEXTENSIONS
 CD /D %~dp0
+
+REM Hardcoded path; ideally this should be retrieved
+IF DEFINED CI SET "InnoSetupPath=%ProgramFiles(x86)%\Inno Setup 6"
 
 REM You can set here the Inno Setup path if for example you have Inno Setup Unicode
 REM installed and you want to use the ANSI Inno Setup which is in another location
@@ -74,6 +77,6 @@ EXIT /B
 Title Compiling PerfmonBar [ERROR]
 ECHO. & ECHO.
 ECHO **ERROR: Build failed and aborted!**
-PAUSE
+IF NOT DEFINED CI PAUSE
 ENDLOCAL
 EXIT

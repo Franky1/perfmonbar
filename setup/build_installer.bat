@@ -74,6 +74,6 @@ EXIT /B
 Title Compiling PerfmonBar [ERROR]
 ECHO. & ECHO.
 ECHO **ERROR: Build failed and aborted!**
-PAUSE
+IF NOT DEFINED CI PAUSE
 ENDLOCAL
 EXIT
